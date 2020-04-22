@@ -13,5 +13,5 @@ export interface User {
 
 export interface Chat {
   id: string;
-  chatter: User;
+  chatters: Array<User>;
 }

@@ -4,29 +4,29 @@ import classNames from 'classnames';
 
 interface Props {
   chats: Array<Chat>;
-  activeUser: User;
-  setActiveUser: Function;
+  activeChat: string;
+  setActiveChat: Function;
 }
 
 const ChatSelector: React.FC<Props> = ({
   chats,
-  activeUser,
-  setActiveUser,
+  activeChat,
+  setActiveChat,
 }) => {
   return (
     <ul className='list-group'>
       {chats.map((chat) => {
         return (
           <li
-            onClick={() => setActiveUser(chat.chatter)}
-            key={chat.chatter.id}
-            data-testid={`chatter-${chat.chatter.id}`}
+            onClick={() => setActiveChat(chat.id)}
+            key={chat.id}
+            data-testid={`chatter-${chat.id}`}
             className={classNames({
               'list-group-item': true,
-              active: chat.chatter.id === activeUser.id,
+              active: chat.id === activeChat,
             })}
           >
-            {chat.chatter.name}
+            {chat.chatters.map((chatter) => chatter.name).join(' ')}
           </li>
         );
       })}

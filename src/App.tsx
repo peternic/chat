@@ -6,11 +6,17 @@ import ChatForm from './components/chatForm';
 import ChatSelector from './components/chatSelector';
 
 const App = () => {
-  const [activeUser, setActiveUser] = useState({ id: '1', name: 'Peter' });
+  const [activeChat, setActiveChat] = useState('1');
 
   const [chats] = useState([
-    { id: '1', chatter: { id: '1', name: 'Peter' } },
-    { id: '2', chatter: { id: '2', name: 'John' } },
+    {
+      id: '1',
+      chatters: [
+        { id: '1', name: 'Peter' },
+        { id: '2', name: 'John' },
+      ],
+    },
+    { id: '2', chatters: [{ id: '2', name: 'John' }] },
   ]);
 
   const [messages, setMessages] = useState([
@@ -31,6 +37,13 @@ const App = () => {
     {
       id: uuidv4(),
       chat: '1',
+      user: '2',
+      text: 'Hi, all!',
+      timestamp: 1586157468923,
+    },
+    {
+      id: uuidv4(),
+      chat: '1',
       user: '1',
       text: 'How are you?',
       timestamp: 1586157468923,
@@ -40,8 +53,6 @@ const App = () => {
   const sendMessage = (message: Message) => {
     setMessages((previousState) => [...previousState, message]);
   };
-
-  const activeChat = chats.find((chat) => chat.chatter.id === activeUser.id);
 
   return (
     <div className='container bg-white mt-5 pb-5 border border-dark'>
@@ -57,8 +68,8 @@ const App = () => {
               <div className='col-sm'>
                 <ChatSelector
                   chats={chats}
-                  activeUser={activeUser}
-                  setActiveUser={setActiveUser}
+                  activeChat={activeChat}
+                  setActiveChat={setActiveChat}
                 />
               </div>
             </div>
@@ -74,17 +85,14 @@ const App = () => {
                 >
                   <ChatMessages
                     messages={messages.filter(
-                      (message) => message.chat === activeChat?.id
+                      (message) => message.chat === activeChat
                     )}
                   />
                 </div>
               </div>
               <div className='row align-items-end'>
                 <div className='col pl-0 mt-2'>
-                  <ChatForm
-                    activeChat={activeChat?.id}
-                    sendMessage={sendMessage}
-                  />
+                  <ChatForm activeChat={activeChat} sendMessage={sendMessage} />
                 </div>
               </div>
             </div>

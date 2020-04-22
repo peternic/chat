@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState, ChangeEvent } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
@@ -6,7 +6,13 @@ interface Props {
   activeChat?: string;
 }
 
-const ChatForm: React.FC<Props> = ({ sendMessage, activeChat }) => {
+const ChatForm: React.FC<Props> = ({ sendMessage, activeChat = '1' }) => {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const [text, setText] = useState<{ [id: string]: string }>({
+    '1': 'Hello',
+  });
+
   const submitMessage = (event: any) => {
     event.preventDefault();
     const data = new FormData(event.target);
@@ -20,12 +26,30 @@ const ChatForm: React.FC<Props> = ({ sendMessage, activeChat }) => {
         timestamp: new Date().getTime(),
       });
     }
-    event.target.reset();
+    updateText('');
+  };
+
+  const updateText = (value: string) => {
+    setText((previousState) => ({
+      ...previousState,
+      [activeChat]: value,
+    }));
+  };
+
+  useEffect(() => {
+    console.log('active', activeChat);
+
+    formRef.current?.reset();
+  }, [activeChat]);
+
+  const storeTextOnChat = (event: any) => {
+    const value = event.target.value;
+    updateText(value);
   };
 
   return (
     <>
-      <form onSubmit={submitMessage}>
+      <form onSubmit={submitMessage} ref={formRef}>
         <input
           data-testid='messageContent'
           type='text'
@@ -33,6 +57,8 @@ const ChatForm: React.FC<Props> = ({ sendMessage, activeChat }) => {
           required
           autoComplete='off'
           className='mr-3'
+          value={text[activeChat] || ''}
+          onChange={storeTextOnChat}
         />
         <button
           type='submit'
